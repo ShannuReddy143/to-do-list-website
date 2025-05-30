@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Daily Planner with Mood</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="planner-container">
+    <header>
+      <h1>Daily Planner</h1>
+      
+      <label for="dateInput">Select Date</label>
+      <input type="date" id="dateInput" />
+    </header>
+
+    <div class="planner">
+      <section class="schedule">
+        <h2>Schedule</h2>
+        <ul>
+          <li><span>6am:</span> <input type="text" class="schedule-input" data-hour="6am"></li>
+          <li><span>7am:</span> <input type="text" class="schedule-input" data-hour="7am"></li>
+          <li><span>8am:</span> <input type="text" class="schedule-input" data-hour="8am"></li>
+          <li><span>9am:</span> <input type="text" class="schedule-input" data-hour="9am"></li>
+          <li><span>10am:</span> <input type="text" class="schedule-input" data-hour="10am"></li>
+          <li><span>11am:</span> <input type="text" class="schedule-input" data-hour="11am"></li>
+          <li><span>12pm:</span> <input type="text" class="schedule-input" data-hour="12pm"></li>
+          <li><span>1pm:</span> <input type="text" class="schedule-input" data-hour="1pm"></li>
+          <li><span>2pm:</span> <input type="text" class="schedule-input" data-hour="2pm"></li>
+          <li><span>3pm:</span> <input type="text" class="schedule-input" data-hour="3pm"></li>
+          <li><span>4pm:</span> <input type="text" class="schedule-input" data-hour="4pm"></li>
+          <li><span>5pm:</span> <input type="text" class="schedule-input" data-hour="5pm"></li>
+          <li><span>6pm:</span> <input type="text" class="schedule-input" data-hour="6pm"></li>
+          <li><span>7pm:</span> <input type="text" class="schedule-input" data-hour="7pm"></li>
+          <li><span>8pm:</span> <input type="text" class="schedule-input" data-hour="8pm"></li>
+          <li><span>9pm:</span> <input type="text" class="schedule-input" data-hour="9pm"></li>
+          <li><span>10pm:</span> <input type="text" class="schedule-input" data-hour="10pm"></li>
+          <li><span>11pm:</span> <input type="text" class="schedule-input" data-hour="11pm"></li>
+        </ul>
+      </section>
+
+      <section class="tasks">
+        <div class="box">
+          <h3>To Do List</h3>
+          <ul id="must-do-list">
+            <li><input type="checkbox" class="task-checkbox"> <input type="text" class="task-input"></li>
+            <li><input type="checkbox" class="task-checkbox"> <input type="text" class="task-input"></li>
+            <li><input type="checkbox" class="task-checkbox"> <input type="text" class="task-input"></li>
+          </ul>
+          <button class="add-btn" onclick="addTask('must-do-list')">Add Task</button>
+        </div>
+
+        <div class="box">
+          <h3>For Tomorrow</h3>
+          <ul id="if-time-list">
+            <li><input type="checkbox" class="task-checkbox"> <input type="text" class="task-input"></li>
+            <li><input type="checkbox" class="task-checkbox"> <input type="text" class="task-input"></li>
+            <li><input type="checkbox" class="task-checkbox"> <input type="text" class="task-input"></li>
+          </ul>
+          <button class="add-btn" onclick="addTask('if-time-list')">Add Task</button>
+        </div>
+
+        <div class="box">
+          <h3>Mood</h3>
+          <div class="mood-options">
+            <div class="mood-emoji" data-mood="happy" onclick="selectMood(this)">😊</div>
+            <div class="mood-emoji" data-mood="neutral" onclick="selectMood(this)">😐</div>
+            <div class="mood-emoji" data-mood="sad" onclick="selectMood(this)">😔</div>
+            <div class="mood-emoji" data-mood="angry" onclick="selectMood(this)">😠</div>
+            <div class="mood-emoji" data-mood="tired" onclick="selectMood(this)">😴</div>
+          </div>
+        </div>
+
+        <div class="box">
+          <h3>What you have learned</h3>
+          <ul id="todo-list">
+            <li><input type="checkbox" class="task-checkbox"> <input type="text" class="task-input"></li>
+            <li><input type="checkbox" class="task-checkbox"> <input type="text" class="task-input"></li>
+            <li><input type="checkbox" class="task-checkbox"> <input type="text" class="task-input"></li>
+          </ul>
+          <button class="add-btn" onclick="addTask('todo-list')">Add Task</button>
+        </div>
+
+        <div class="box">
+          <h3>Left Work</h3>
+          <ul id="tomorrow-list">
+            <li><input type="checkbox" class="task-checkbox"> <input type="text" class="task-input"></li>
+            <li><input type="checkbox" class="task-checkbox"> <input type="text" class="task-input"></li>
+            <li><input type="checkbox" class="task-checkbox"> <input type="text" class="task-input"></li>
+          </ul>
+          <button class="add-btn" onclick="addTask('tomorrow-list')">Add Task</button>
+        </div>
+
+        <div class="box notes-box">
+          <h3>Notes</h3>
+          <textarea id="notes" rows="8" placeholder="Write anything important..."></textarea>
+          <button id="saveBtn">Save</button>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    function addTask(listId) {
+      const ul = document.getElementById(listId);
+      const li = document.createElement('li');
+      li.innerHTML = `<input type="checkbox" class="task-checkbox"> <input type="text" class="task-input">`;
+      ul.appendChild(li);
+    }
+
+    function selectMood(element) {
+      document.querySelectorAll('.mood-emoji').forEach(emoji => {
+        emoji.classList.remove('selected');
+      });
+      element.classList.add('selected');
+    }
+
+    const dateInput = document.getElementById('dateInput');
+    const saveBtn = document.getElementById('saveBtn');
+
+    // Load data when date changes
+    dateInput.addEventListener('change', () => {
+      const selectedDate = dateInput.value;
+      loadData(selectedDate);
+    });
+
+    // Save data when save button is clicked
+    saveBtn.addEventListener('click', () => {
+      const selectedDate = dateInput.value;
+      if (!selectedDate) {
+        alert('Please select a date first!');
+        return;
+      }
+
+      const data = {
+        schedule: {},
+        tasks: {
+          'must-do-list': [],
+          'if-time-list': [],
+          'todo-list': [],
+          'tomorrow-list': []
+        },
+        mood: document.querySelector('.mood-emoji.selected')?.dataset.mood || '',
+        notes: document.getElementById('notes').value
+      };
+
+      // Collect schedule data
+      document.querySelectorAll('.schedule-input').forEach(input => {
+        data.schedule[input.dataset.hour] = input.value;
+      });
+
+      // Collect tasks data
+      ['must-do-list', 'if-time-list', 'todo-list', 'tomorrow-list'].forEach(listId => {
+        document.querySelectorAll(`#${listId} li`).forEach(li => {
+          const checkbox = li.querySelector('.task-checkbox');
+          const text = li.querySelector('.task-input');
+          data.tasks[listId].push({
+            checked: checkbox.checked,
+            text: text.value
+          });
+        });
+      });
+
+      // Save to localStorage
+      localStorage.setItem(selectedDate, JSON.stringify(data));
+      alert('Data saved for ' + selectedDate);
+    });
+
+    function loadData(date) {
+      const savedData = localStorage.getItem(date);
+      if (savedData) {
+        const data = JSON.parse(savedData);
+
+        // Load schedule
+        document.querySelectorAll('.schedule-input').forEach(input => {
+          input.value = data.schedule[input.dataset.hour] || '';
+        });
+
+        // Load tasks
+        ['must-do-list', 'if-time-list', 'todo-list', 'tomorrow-list'].forEach(listId => {
+          const ul = document.getElementById(listId);
+          ul.innerHTML = ''; // Clear existing tasks
+          data.tasks[listId].forEach(task => {
+            const li = document.createElement('li');
+            li.innerHTML = `<input type="checkbox" class="task-checkbox" ${task.checked ? 'checked' : ''}> <input type="text" class="task-input" value="${task.text}">`;
+            ul.appendChild(li);
+          });
+          // Add default empty tasks if fewer than 3
+          while (ul.children.length < 3) {
+            const li = document.createElement('li');
+            li.innerHTML = `<input type="checkbox" class="task-checkbox"> <input type="text" class="task-input">`;
+            ul.appendChild(li);
+          }
+        });
+
+        // Load mood
+        document.querySelectorAll('.mood-emoji').forEach(emoji => {
+          emoji.classList.remove('selected');
+          if (emoji.dataset.mood === data.mood) {
+            emoji.classList.add('selected');
+          }
+        });
+
+        // Load notes
+        document.getElementById('notes').value = data.notes || '';
+      } else {
+        // Clear all fields if no data exists
+        document.querySelectorAll('.schedule-input').forEach(input => {
+          input.value = '';
+        });
+        ['must-do-list', 'if-time-list', 'todo-list', 'tomorrow-list'].forEach(listId => {
+          const ul = document.getElementById(listId);
+          ul.innerHTML = '';
+          for (let i = 0; i < 3; i++) {
+            const li = document.createElement('li');
+            li.innerHTML = `<input type="checkbox" class="task-checkbox"> <input type="text" class="task-input">`;
+            ul.appendChild(li);
+          }
+        });
+        document.querySelectorAll('.mood-emoji').forEach(emoji => {
+          emoji.classList.remove('selected');
+        });
+        document.getElementById('notes').value = '';
+      }
+    }
+
+    // Load data for today's date on page load
+    const today = new Date().toISOString().split('T')[0];
+    dateInput.value = today;
+    loadData(today);
+  </script>
+</body>
+</html>
